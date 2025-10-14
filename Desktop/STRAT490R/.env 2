@@ -1,0 +1,38 @@
+# Database
+DATABASE_URL=postgresql://username:password@localhost:5432/reportify
+
+# API Configuration
+PORT=3001
+HOST=0.0.0.0
+JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+NODE_ENV=development
+
+# ASR Service
+ASR_PORT=3002
+ASR_HOST=0.0.0.0
+OPENAI_API_KEY=sk-your-openai-api-key-for-whisper-transcription
+
+# Web App
+NEXT_PUBLIC_API_URL=http://localhost:3001
+
+# Logging
+LOG_LEVEL=info
+
+# External Integrations
+SERVICENOW_INSTANCE_URL=https://your-instance.service-now.com
+SERVICENOW_CLIENT_ID=your-servicenow-client-id
+SERVICENOW_CLIENT_SECRET=your-servicenow-client-secret
+
+JIRA_BASE_URL=https://your-domain.atlassian.net
+JIRA_EMAIL=your-email@domain.com
+JIRA_API_TOKEN=your-jira-api-token
+
+ZENDESK_SUBDOMAIN=your-subdomain
+ZENDESK_EMAIL=your-email@domain.com
+ZENDESK_API_TOKEN=your-zendesk-api-token
+
+# File Storage (for production)
+AWS_ACCESS_KEY_ID=your-aws-access-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret-key
+AWS_REGION=us-east-1
+AWS_S3_BUCKET=reportify-media-storage
