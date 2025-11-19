@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 
+// This function handles POST requests to /api/contact
 export async function POST(request: NextRequest) {
   try {
+    // Extract the form data from the request body
+    // This gives us an object with name, email, phone, and message
     const { name, email, phone, message } = await request.json();
 
-    // Validate required fields
+    // Validate that required fields are present
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Missing required fields' },
@@ -13,8 +16,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create transporter using Gmail
-    // You'll need to set up these environment variables
+    // Print a separator line for better readability
+    console.log('\n' + '='.repeat(50));
+    console.log('📬 NEW CONTACT FORM SUBMISSION');
+    console.log('='.repeat(50));
+
+    // Print each field in a formatted way
+    console.log(`📝 Name:    ${name}`);
+    console.log(`📧 Email:   ${email}`);
+
+    // Only print phone if it was provided (it's optional)
+    if (phone) {
+      console.log(`📞 Phone:   ${phone}`);
+    }
+
+    console.log(`💬 Message:\n${message}`);
+    console.log('='.repeat(50) + '\n');
+
+    // Configure nodemailer transporter for Gmail
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -23,46 +42,47 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Email content
+    // Email content to send to you
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: 'worthenbenton@gmail.com',
+      to: process.env.EMAIL_USER, // Send to yourself
       subject: `New Contact Form Submission from ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #2563eb;">New Contact Form Submission</h2>
+      text: `
+New contact form submission:
 
-          <div style="background-color: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
-            <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
-            ${phone ? `<p style="margin: 10px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
-          </div>
+Name: ${name}
+Email: ${email}
+Phone: ${phone || 'Not provided'}
 
-          <div style="margin: 20px 0;">
-            <h3 style="color: #374151;">Message:</h3>
-            <p style="white-space: pre-wrap; line-height: 1.6;">${message}</p>
-          </div>
-
-          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;">
-
-          <p style="color: #6b7280; font-size: 12px;">
-            This email was sent from your portfolio website contact form.
-          </p>
-        </div>
+Message:
+${message}
       `,
+      html: `
+<h2>New Contact Form Submission</h2>
+<p><strong>Name:</strong> ${name}</p>
+<p><strong>Email:</strong> ${email}</p>
+<p><strong>Phone:</strong> ${phone || 'Not provided'}</p>
+<h3>Message:</h3>
+<p>${message.replace(/\n/g, '<br>')}</p>
+      `,
+      replyTo: email, // Set reply-to as the sender's email
     };
 
-    // Send email
+    // Send the email
     await transporter.sendMail(mailOptions);
+    console.log('✅ Email sent successfully');
 
+    // Send a success response back to the frontend
+    // This is what makes the form show "Message sent successfully!"
     return NextResponse.json(
-      { message: 'Email sent successfully' },
+      { message: 'Message sent successfully!' },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Error sending email:', error);
+    // If something goes wrong, log the error and send an error response
+    console.error('❌ Error processing form submission:', error);
     return NextResponse.json(
-      { error: 'Failed to send email' },
+      { error: 'Failed to send message. Please try again.' },
       { status: 500 }
     );
   }
