@@ -160,8 +160,8 @@ export default function TypingGame({ onComplete }: TypingGameProps) {
 
         <div
           ref={gameAreaRef}
-          className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl border-2 border-blue-700 overflow-visible"
-          style={{ height: `${GAME_HEIGHT}px` }}
+          className="relative bg-gray-900/50 backdrop-blur-sm rounded-2xl border-2 border-blue-700"
+          style={{ height: `${GAME_HEIGHT}px`, overflow: 'visible' }}
         >
           {letters.map(letter => (
             <div
